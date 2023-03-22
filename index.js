@@ -3,7 +3,7 @@ const http = require('http').createServer(app);
 const port=process.env.PORT||3000
 const io = require('socket.io')(http, {
   cors: {
-    origins:'http://localhost:4200'
+    origins:'https://demonodeweb.herokuapp.com'
   }
 });
 
