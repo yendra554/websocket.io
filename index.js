@@ -1,24 +1,26 @@
-const app = require('express')();
-const http = require('http').createServer(app);
-const port=process.env.PORT||3000
-const io = require('socket.io')(http, {
-  cors: {
-    origins:'https://demonodeweb.herokuapp.com'
-  }
+const WebSocket = require('ws');
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+const server = app.listen(8080, () => {
+  console.log('Server started on port 8080');
 });
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hey Socket.io</h1>');
-});
+const wsServer = new WebSocket.Server({ server });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+wsServer.on('connection', (socket) => {
+           
+  console.log('New WebSocket connection');
+
+  socket.on('message', (message) => {
+    console.log(`Received message: ${message}`);
+    socket.send(`You said: ${message}`);
+  });
+
+  socket.on('close', () => {
+    console.log('WebSocket connection closed');
   });
 });
-
-http.listen(process.env.PORT||3000, () => {
-  console.log('listening on *:3000');
-});
-
